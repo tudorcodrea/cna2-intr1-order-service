@@ -21,7 +21,7 @@ spec:
       serviceAccountName: pubsub-sa
       containers:
       - name: order-service
-        image: 660633971866.dkr.ecr.us-east-1.amazonaws.com/introspect1-order:latest
+        image: 660633971866.dkr.ecr.us-east-1.amazonaws.com/introspect1eks-order:latest
         ports:
         - containerPort: 8080
 ---
