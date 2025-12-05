@@ -47,5 +47,3 @@ spec:
   topic: orders-events
   route: /product-updates
   pubsubname: orders-pubsub
-  scopes:
-  - orderservice
