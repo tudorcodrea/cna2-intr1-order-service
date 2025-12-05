@@ -37,13 +37,3 @@ spec:
   - port: 80
     targetPort: 8080
   type: ClusterIP
----
-apiVersion: dapr.io/v1alpha1
-kind: Subscription
-metadata:
-  name: orders-events-subscription
-  namespace: microservices
-spec:
-  topic: orders-events
-  route: /product-updates
-  pubsubname: orders-pubsub
