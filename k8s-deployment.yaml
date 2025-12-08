@@ -20,13 +20,6 @@ spec:
         ports:
         - containerPort: 8080
           protocol: TCP
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - /bin/sh
-              - -c
-              - kubectl --kubeconfig $KUBECONFIG rollout restart deployment/product-service -n microservices
         env:
         - name: NAMESPACE
           valueFrom:
@@ -38,50 +31,6 @@ spec:
               fieldPath: metadata.name
         - name: sqs.queue.url
           value: "https://sqs.us-east-1.amazonaws.com/660633971866/order-service-queue"
-        - --dapr-http-port
-        - "3500"
-        - --dapr-grpc-port
-        - "50001"
-        - --mode
-        - kubernetes
-        - --enable-api-logging
-        - "true"
-        - --sentry-address
-        - dapr-sentry.dapr-system.svc.cluster.local:443
-        ports:
-        - containerPort: 3500
-          name: dapr-http
-        - containerPort: 50001
-          name: dapr-grpc
-        env:
-        - name: NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        - name: DAPR_TRUST_ANCHORS
-          value: |
-            -----BEGIN CERTIFICATE-----
-            MIIBcTCCARagAwIBAgIQeC2S302B6raA+OaITH7XQzAKBggqhkjOPQQDAjAYMRYw
-            FAYDVQQKEw1jbHVzdGVyLmxvY2FsMB4XDTI1MTIwNzA3MjcyOVoXDTI2MTIwNzA3
-            NDIyOVowGDEWMBQGA1UEChMNY2x1c3Rlci5sb2NhbDBZMBMGByqGSM49AgEGCCqG
-            SM49AwEHA0IABEN0JNoY0myIxSQlAQiCcBJxZsx5RKJrIAXMe9FiWzFPekIDS79V
-            TRE1pNhAbBylRTjFqBynaWjC9hRAsHTmKwujQjBAMA4GA1UdDwEB/wQEAwICpDAP
-            BgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSs05o4BdpNZwgtTmO5C8WlTDrtuDAK
-            BggqhkjOPQQDAgNJADBGAiEAkmwmMcfq/Wnvv9vfA4v2ug/lIwcnG2n3Kg6XATK/
-            gqsCIQCr4yGDJgwZozrV3rWEcZShQPdJe6RsqLu0cY507aML7g==
-            -----END CERTIFICATE-----
-        volumeMounts:
-        - name: dapr-data
-          mountPath: /tmp/dapr
-        - name: dapr-trust-bundle
-          mountPath: /dapr/certs
-          readOnly: true
-      volumes:
-      - name: dapr-data
-        emptyDir: {}
-      - name: dapr-trust-bundle
-        secret:
-          secretName: dapr-trust-bundle
 ---
 apiVersion: v1
 kind: Service
