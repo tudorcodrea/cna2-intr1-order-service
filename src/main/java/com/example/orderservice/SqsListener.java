@@ -1,17 +1,19 @@
 package com.example.orderservice;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import software.amazon.awssdk.services.sqs.SqsClient;
+import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
-import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.List;
 
 @Service
 public class SqsListener {
@@ -21,8 +23,7 @@ public class SqsListener {
     private final SqsClient sqsClient;
     private final ObjectMapper objectMapper;
 
-    @Value("${sqs.queue.url}")
-    private String queueUrl;
+    private final String queueUrl = "https://sqs.us-east-1.amazonaws.com/660633971866/order-service-queue";
 
     public SqsListener() {
         this.sqsClient = SqsClient.create();
