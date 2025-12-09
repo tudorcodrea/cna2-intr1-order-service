@@ -1,6 +1,7 @@
 package com.example.orderservice;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
@@ -28,6 +30,7 @@ public class SqsListener {
     public SqsListener() {
         this.sqsClient = SqsClient.create();
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Scheduled(fixedDelay = 5000) // Poll every 5 seconds
@@ -40,7 +43,9 @@ public class SqsListener {
         List<Message> messages = sqsClient.receiveMessage(request).messages();
         for (Message message : messages) {
             try {
-                Product product = objectMapper.readValue(message.body(), Product.class);
+                Map<String, Object> snsMessage = objectMapper.readValue(message.body(), Map.class);
+                String productJson = (String) snsMessage.get("Message");
+                Product product = objectMapper.readValue(productJson, Product.class);
                 handleProductEvent(product);
 
                 // Delete the message after processing
